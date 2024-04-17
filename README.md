@@ -2,6 +2,46 @@
 
 This is the assignment of Orbital Mechanics.
 
+## Run
+
+- The server can directly be run using prebuilt docker image
+
+```shell
+docker run --rm -it -p 8000:8000 ghcr.io/ayush1325/orbital_calculator:main
+```
+
+## Development
+
+### Virtualenv
+
+1. Create virtualenv:
+```shell
+python -m venv .venv
+```
+2. Install dependencies
+```shell
+pip install -r requirements.txt
+```
+3. Run Server
+```shell
+python manage.py runserver
+```
+4. Goto `http://localhost:8000/`
+
+### Docker
+
+1. Build Image
+```shell
+docker build . -t orbital_calculator_dev
+```
+2. Run Image
+```shell
+docker run --rm -it -p 8000:8000 orbital_calculator_dev
+```
+3. Goto `http://localhost:8000/`
+
+- Note: This is only tested on Linux.
+
 ## How to Contribute
 
 Here is a video showing the PR process for anyone unfamiliar
