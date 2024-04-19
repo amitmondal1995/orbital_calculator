@@ -14,6 +14,7 @@ idna==3.7
 incremental==22.10.0
 isort==5.13.2
 mccabe==0.7.0
+numpy==1.26.4
 nodeenv==1.8.0
 packaging==24.0
 platformdirs==4.2.0
