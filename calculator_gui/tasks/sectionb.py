@@ -11,8 +11,10 @@ def main1(r0: list[float], v0: list[float], t: int) -> tuple[list[float], list[f
     # magnitude
     r0_norm = np.linalg.norm(r0)
     v0_norm = np.linalg.norm(v0)
-
-    vr0 = np.dot(r0, r0) / r0_norm
+    r0 = np.array(r0)
+    v0 = np.array(v0)
+    print(f"r0 : {r0}  && v0 : {v0}")
+    vr0 = np.dot(r0, v0) / r0_norm
 
     alpha = (2 / r0_norm) - (v0_norm**2) / MU
     print(f"alpha : {round(alpha * (10**5), 4)} x 10^(-5) Km^(-1)")
@@ -23,7 +25,7 @@ def main1(r0: list[float], v0: list[float], t: int) -> tuple[list[float], list[f
     f, g = f_and_g(x, t, r0_norm, alpha)
     print(f"f : {round(f, 4)} && g : {round(g, 4)}")
 
-    R = f * r0 + g * v0
+    R = (f * r0) + (g * v0)
 
     r = np.linalg.norm(R)
     print(f"r : {r}")
