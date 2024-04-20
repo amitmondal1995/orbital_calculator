@@ -1,20 +1,26 @@
 import math
-from typing import List, Tuple
-
-def getInput() -> List[float]:
-    return list(map(float, input().split()))
+from typing import List
 
 GMs = (1.32712440018) * 1e20
+
 
 def f1(x: float, y: float) -> float:
     return GMs * x / math.sqrt((x * x + y * y) ** 3)
 
+
 def f2(x: float, y: float) -> float:
     return GMs * y / math.sqrt((x * x + y * y) ** 3)
 
-def calc(x0: float, y0: float, vx0: float, vy0: float, 
-         t0: float, tmax: float, dt: float = 0.1) -> List[List[float]]:
-    
+
+def calc(
+    x0: float,
+    y0: float,
+    vx0: float,
+    vy0: float,
+    t0: float,
+    tmax: float,
+    dt: float = 0.1,
+) -> List[List[float]]:
     """
     Inputs:
     x0: Inital Position (x component)
@@ -25,7 +31,7 @@ def calc(x0: float, y0: float, vx0: float, vy0: float,
     tmax: Final Time
     dt: Step Size (generally 0.1)
 
-    Output: 
+    Output:
     Trajectory 2D vector = number_of_time_steps*(x, y, vx, vy)
     """
 
@@ -33,7 +39,7 @@ def calc(x0: float, y0: float, vx0: float, vy0: float,
     vec = [x0, y0, vx0, vy0]
     Traj = []
     while t0 <= tmax:
-        val = [0]*4
+        val = [0.0] * 4
         x = vec[0]
         y = vec[1]
         k1x = dt * vec[2]
