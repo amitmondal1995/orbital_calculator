@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="button">Calculate</button>
+  </form>
+
+<fieldset disabled>
+  
+<div class="field">
+  <label class="label">H</label>
+  <div class="control">
+		<input class="input" type="text" value="{{h}}">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">Incl</label>
+  <div class="control">
+		<input class="input" type="text" value="{{incl}}">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">Ra</label>
+  <div class="control">
+		<input class="input" type="text" value="{{ra}}">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">E</label>
+  <div class="control">
+		<input class="input" type="text" value="{{e}}">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">W</label>
+  <div class="control">
+		<input class="input" type="text" value="{{w}}">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">ta</label>
+  <div class="control">
+		<input class="input" type="text" value="{{ta}}">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">a</label>
+  <div class="control">
+		<input class="input" type="text" value="{{a}}">
+  </div>
+</div>
+
+<div class="field">
+  <label class="label">t</label>
+  <div class="control">
+		<input class="input" type="text" value="{{t}}">
+  </div>
+</div>
+
+</fieldset>
+{% endblock %}

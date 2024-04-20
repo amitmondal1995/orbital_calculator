@@ -2,10 +2,22 @@ from django.shortcuts import render
 from django import forms
 from .tasks import sectionb,hohmann_transfer,jd_lst
 
-class SectionBForm(forms.Form):
+class SectionB1Form(forms.Form):
     r0 = forms.CharField(label="R0", widget=forms.TextInput(attrs={'placeholder': '1 2 3'}))
     v0 = forms.CharField(label="V0", widget=forms.TextInput(attrs={'placeholder': '1 2 3'}))
     t = forms.IntegerField(label="t")
+
+class SectionB2Form(forms.Form):
+    r = forms.CharField(label="R", widget=forms.TextInput(attrs={'placeholder': '1 2 3'}))
+    v = forms.CharField(label="V", widget=forms.TextInput(attrs={'placeholder': '1 2 3'}))
+
+class SectionB3Form(forms.Form):
+    h = forms.FloatField(label="H")
+    e = forms.FloatField(label="E")
+    ra = forms.FloatField(label="RA")
+    incl = forms.FloatField(label="Incl")
+    w = forms.FloatField(label="W")
+    ta = forms.FloatField(label="Ta")
 
 class Hoffman(forms.Form):
     ri =  forms.FloatField(label="Ri")
@@ -22,18 +34,16 @@ class LST(forms.Form):
     longitude =  forms.FloatField(label="Longitude")
     utc_time = forms.FloatField(label="UTC_Time")
 
-
-
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
 
-def section_b(request):
+def section_b_1(request):
     context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
-        form = SectionBForm(request.POST)
+        form = SectionB1Form(request.POST)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -48,14 +58,86 @@ def section_b(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = SectionBForm()
+        form = SectionB1Form()
 
         context["r_val"] = ""
         context["v_val"] = ""
 
     context["form"] = form
 
-    return render(request, "section_b.html", context)
+    return render(request, "section_b_1.html", context)
+
+def section_b_2(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = SectionB2Form(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            r = list(map(float, form.cleaned_data["r"].split(" ")))
+            v = list(map(float, form.cleaned_data["v"].split(" ")))
+            h, incl, ra, e, w, ta, a, t = sectionb.main2(r, v)
+            context["h"] = h
+            context["incl"] = incl
+            context["ra"] = ra
+            context["e"] = e
+            context["w"] = w
+            context["ta"] = ta
+            context["a"] = a
+            context["t"] = t
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SectionB2Form()
+
+        context["h"] = ""
+        context["incl"] = ""
+        context["ra"] = ""
+        context["e"] = ""
+        context["w"] = ""
+        context["ta"] = ""
+        context["a"] = ""
+        context["t"] = ""
+
+    context["form"] = form
+
+    return render(request, "section_b_2.html", context)
+
+def section_b_3(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = SectionB3Form(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            h = float(form.cleaned_data["h"])
+            e = float(form.cleaned_data["e"])
+            ra = float(form.cleaned_data["ra"])
+            incl = float(form.cleaned_data["incl"])
+            w = float(form.cleaned_data["w"])
+            ta = float(form.cleaned_data["ta"])
+            r, v = sectionb.main3(h, e, ra, incl, w, ta)
+            context["r_val"] = " ".join(map(str, r))
+            context["v_val"] = " ".join(map(str, v))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SectionB3Form()
+
+        context["r_val"] = ""
+        context["v_val"] = ""
+
+    context["form"] = form
+
+    return render(request, "section_b_3.html", context)
 
 def hoffman(request):
     context = {}
