@@ -1,0 +1,62 @@
+{% extends 'base.html' %} 
+{% load crispy_forms_tags %} {% block content %}
+<form method="post">
+  {% csrf_token %} {{ form|crispy }}
+  <button type="submit" class="button">Calculate</button>
+</form>
+
+<fieldset disabled>
+  <div class="field">
+    <label class="label">Semi Major Axis</label>
+    <div class="control">
+      <input class="input" type="text" value="{{semi_major}}" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">V Periapsis</label>
+    <div class="control">
+      <input class="input" type="text" value="{{v_peri}}" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">V Apoapsis</label>
+    <div class="control">
+      <input class="input" type="email" value="{{v_apo}}" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">VI</label>
+    <div class="control">
+      <input class="input" type="email" value="{{vi}}" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">VF</label>
+    <div class="control">
+      <input class="input" type="email" value="{{vf}}" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Delta VI</label>
+    <div class="control">
+      <input class="input" type="email" value="{{del_vi}}" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Delta VF</label>
+    <div class="control">
+      <input class="input" type="email" value="{{del_vf}}" />
+    </div>
+  </div>
+  <div class="field">
+    <label class="label">Time Period</label>
+    <div class="control">
+      <input class="input" type="email" value="{{tp}}" />
+    </div>
+  </div>
+</fieldset>
+{% endblock %}
