@@ -95,3 +95,78 @@ def kepler_u(t, r0, vr0, alpha):
         x = x - ratio
 
     return x
+
+def main2(R: list[float], V: list[float]) -> tuple[float, float, float, float, float, float]:
+    eps = 1e-10
+    pi = 3.14
+    rad = 180/(pi)
+    r = np.linalg.norm(R)
+    v = np.linalg.norm(V)
+    R = np.array(R)
+    V = np.array(V)
+
+    vr = np.dot(R, V)/r
+    H = np.cross(R, V)
+    h = np.linalg.norm(H)
+
+    incl = np.arccos(H[2]/h)
+
+    N = np.cross([0, 0, 1], H)
+    n = np.linalg.norm(N)
+
+    if n != 0:
+        RA = np.arccos(N[0]/n)
+        if N[1] < 0:
+            RA = 2*pi - RA
+    else:
+        RA = 0
+
+
+    E = (1/MU) * ((v**2 - MU/r)*R - r*vr*V)
+    e = np.linalg.norm(E)
+
+    if n!= 0:
+        if e > eps:
+            w = np.arccos(np.dot(N, E)/(n*e))
+            if E[2] < 0:
+                w = 2*pi - w
+        else:
+            w = 0
+
+    if e > eps:
+        TA = np.arccos(np.dot(E, R)/(e*r))
+        if vr < 0:
+            TA = 2*pi - TA
+    else:
+        cp = np.cross(N, R)
+        if cp[2] >= 0:
+            TA = np.arccos(np.dot(N, R) / n*r)
+        else:
+            TA = 2*pi - np.arccos(np.dot(N, R) / n*r)
+
+    a = h**2/(MU * (1 - e**2))
+
+    T = (2*pi / math.sqrt(MU)) * (math.sqrt(a**3))
+    RA = RA*rad
+    w = w*rad
+    TA = TA*rad
+    incl = incl*rad
+
+    return h, incl, RA, e, w, TA, a, T
+
+def main3(h:float, e:float, RA:float, incl:float, w:float, TA:float)->\
+    tuple[list[float], list[float]]:
+    rxp = (h**2 / MU) * (1/(1 + e*np.cos(TA))) * (np.array([[np.cos(TA)], [np.sin(TA)], [0]]))
+    vxp = (MU / h) * (np.array([[-np.sin(TA)], [e + np.cos(TA)], [0]]))
+
+    R3_W = np.array([[np.cos(RA), np.sin(RA), 0], [-np.sin(RA), np.cos(RA), 0], [0, 0, 1]])
+    R1_i = np.array([[1, 0, 0], [0, np.cos(incl), np.sin(incl)], [0, -np.sin(incl), np.cos(incl)]])
+    R3_w = np.array([[np.cos(w), np.sin(w), 0], [-np.sin(w), np.cos(w), 0], [0, 0, 1]])
+    temp_cal = np.dot(R3_w, R1_i)
+    QXx = np.dot(temp_cal, R3_W)
+
+    QxX = np.transpose(QXx)
+
+    rX = np.dot(QxX, rxp)
+    vX = np.dot(QxX, vxp)
+    return rX, vX
