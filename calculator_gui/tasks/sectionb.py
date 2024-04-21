@@ -96,7 +96,8 @@ def kepler_u(t, r0, vr0, alpha):
 
     return x
 
-def main2(R: list[float], V: list[float]) -> tuple[float, float, float, float, float, float]:
+def main2(R: list[float], V: list[float]) -> \
+    tuple[float, float, float, float, float, float, float, float]:
     eps = 1e-10
     pi = 3.14
     rad = 180/(pi)
@@ -126,8 +127,9 @@ def main2(R: list[float], V: list[float]) -> tuple[float, float, float, float, f
     e = np.linalg.norm(E)
 
     if n!= 0:
+        w = np.arccos(np.dot(N, E)/(n*e))
         if e > eps:
-            w = np.arccos(np.dot(N, E)/(n*e))
+            # w = np.arccos(np.dot(N, E)/(n*e))
             if E[2] < 0:
                 w = 2*pi - w
         else:
