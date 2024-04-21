@@ -1,6 +1,12 @@
 from django.shortcuts import render
 from django import forms
-from .tasks import sectionb, hohmann_transfer, jd_lst, sectiona
+from .tasks import (
+    sectionb,
+    hohmann_transfer,
+    jd_lst,
+    sectiona,
+    ref_frame_and_coords_transfer,
+)
 
 
 class SectionB1Form(forms.Form):
@@ -59,6 +65,22 @@ class Kepler_Eqn(forms.Form):
     e = forms.FloatField(label="E")
 
 
+class SectionC1Form(forms.Form):
+    inertial_coords = forms.CharField(
+        label="Inertial Coordinates",
+        widget=forms.TextInput(attrs={"placeholder": "1 2 3"}),
+    )
+    rotation_angle = forms.FloatField(label="Rotation Angle")
+
+
+class SectionC2Form(forms.Form):
+    rotating_coords = forms.CharField(
+        label="Rotating Coordinates",
+        widget=forms.TextInput(attrs={"placeholder": "1 2 3"}),
+    )
+    rotation_angle = forms.FloatField(label="Rotation Angle")
+
+
 # Create your views here.
 def home(request):
     return render(request, "home.html")
@@ -79,8 +101,8 @@ def section_b_1(request):
             r0 = list(map(float, form.cleaned_data["r0"].split(" ")))
             v0 = list(map(float, form.cleaned_data["v0"].split(" ")))
             r, v = sectionb.main1(r0, v0, t)
-            context["r_val"] = " ".join(map(str, r))
-            context["v_val"] = " ".join(map(str, v))
+            context["r_val"] = ", ".join(map(str, r))
+            context["v_val"] = ", ".join(map(str, v))
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -153,8 +175,8 @@ def section_b_3(request):
             w = float(form.cleaned_data["w"])
             ta = float(form.cleaned_data["ta"])
             r, v = sectionb.main3(h, e, ra, incl, w, ta)
-            context["r_val"] = " ".join(map(str, r))
-            context["v_val"] = " ".join(map(str, v))
+            context["r_val"] = ", ".join(map(str, r))
+            context["v_val"] = ", ".join(map(str, v))
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -325,3 +347,65 @@ def kepler_eqn(request):
     context["form"] = form
 
     return render(request, "kepler_eqn.html", context)
+
+
+def section_c_1(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = SectionC1Form(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            inertial_coords = list(
+                map(float, form.cleaned_data["inertial_coords"].split(" "))
+            )
+            rotation_angle = float(form.cleaned_data["rotation_angle"])
+            ans = ref_frame_and_coords_transfer.inertial_to_rotating_frame(
+                inertial_coords, rotation_angle
+            )
+            context["rotation_coords"] = ", ".join(map(str, ans))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SectionC1Form()
+
+        context["rotation_coords"] = ""
+
+    context["form"] = form
+
+    return render(request, "section_c_1.html", context)
+
+
+def section_c_2(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = SectionC2Form(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL
+            rotating_coords = list(
+                map(float, form.cleaned_data["rotating_coords"].split(" "))
+            )
+            rotation_angle = float(form.cleaned_data["rotation_angle"])
+            ans = ref_frame_and_coords_transfer.rotating_to_inertial_frame(
+                rotating_coords, rotation_angle
+            )
+            context["inertial_coords"] = ", ".join(map(str, ans))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = SectionC2Form()
+
+        context["inertial_coords"] = ""
+
+    context["form"] = form
+
+    return render(request, "section_c_2.html", context)

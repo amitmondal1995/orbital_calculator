@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% load crispy_forms_tags %}
+
+{% block content %}
+  <form method="post">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button type="submit" class="button">Calculate</button>
+  </form>
+
+<fieldset disabled>
+
+<div class="field">
+  <label class="label">Inertial Coordinates</label>
+  <div class="control">
+		<input class="input" type="text" value="{{inertial_coords}}">
+  </div>
+</div>
+
+</fieldset>
+{% endblock %}
