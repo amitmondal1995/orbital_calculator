@@ -1,15 +1,26 @@
 from django.shortcuts import render
 from django import forms
-from .tasks import sectionb,hohmann_transfer,jd_lst, sectiona
+from .tasks import sectionb, hohmann_transfer, jd_lst, sectiona
+
 
 class SectionB1Form(forms.Form):
-    r0 = forms.CharField(label="R0", widget=forms.TextInput(attrs={'placeholder': '1 2 3'}))
-    v0 = forms.CharField(label="V0", widget=forms.TextInput(attrs={'placeholder': '1 2 3'}))
+    r0 = forms.CharField(
+        label="R0", widget=forms.TextInput(attrs={"placeholder": "1 2 3"})
+    )
+    v0 = forms.CharField(
+        label="V0", widget=forms.TextInput(attrs={"placeholder": "1 2 3"})
+    )
     t = forms.IntegerField(label="t")
 
+
 class SectionB2Form(forms.Form):
-    r = forms.CharField(label="R", widget=forms.TextInput(attrs={'placeholder': '1 2 3'}))
-    v = forms.CharField(label="V", widget=forms.TextInput(attrs={'placeholder': '1 2 3'}))
+    r = forms.CharField(
+        label="R", widget=forms.TextInput(attrs={"placeholder": "1 2 3"})
+    )
+    v = forms.CharField(
+        label="V", widget=forms.TextInput(attrs={"placeholder": "1 2 3"})
+    )
+
 
 class SectionB3Form(forms.Form):
     h = forms.FloatField(label="H")
@@ -19,30 +30,39 @@ class SectionB3Form(forms.Form):
     w = forms.FloatField(label="W")
     ta = forms.FloatField(label="Ta")
 
+
 class Hoffman(forms.Form):
-    ri =  forms.FloatField(label="Ri")
-    rf =  forms.FloatField(label="Rf")
+    ri = forms.FloatField(label="Ri")
+    rf = forms.FloatField(label="Rf")
     mu = forms.FloatField(label="Mu")
 
+
 class Julian(forms.Form):
-    year =  forms.FloatField(label=" Year")
-    month =  forms.FloatField(label="Month")
+    year = forms.FloatField(label=" Year")
+    month = forms.FloatField(label="Month")
     day = forms.FloatField(label="Day")
 
+
 class LST(forms.Form):
-    jul_date =  forms.FloatField(label="Julian Date")
-    longitude =  forms.FloatField(label="Longitude")
+    jul_date = forms.FloatField(label="Julian Date")
+    longitude = forms.FloatField(label="Longitude")
     utc_time = forms.FloatField(label="UTC_Time")
+
+
 class Kepler_hyp(forms.Form):
-    m =  forms.FloatField(label="M")
-    e =  forms.FloatField(label="E")
+    m = forms.FloatField(label="M")
+    e = forms.FloatField(label="E")
+
+
 class Kepler_Eqn(forms.Form):
-    m =  forms.FloatField(label="M")
-    e =  forms.FloatField(label="E")
+    m = forms.FloatField(label="M")
+    e = forms.FloatField(label="E")
+
 
 # Create your views here.
 def home(request):
-    return render(request, 'home.html')
+    return render(request, "home.html")
+
 
 def section_b_1(request):
     context = {}
@@ -72,6 +92,7 @@ def section_b_1(request):
     context["form"] = form
 
     return render(request, "section_b_1.html", context)
+
 
 def section_b_2(request):
     context = {}
@@ -113,6 +134,7 @@ def section_b_2(request):
 
     return render(request, "section_b_2.html", context)
 
+
 def section_b_3(request):
     context = {}
     # if this is a POST request we need to process the form data
@@ -145,6 +167,7 @@ def section_b_3(request):
 
     return render(request, "section_b_3.html", context)
 
+
 def hoffman(request):
     context = {}
     # if this is a POST request we need to process the form data
@@ -160,11 +183,11 @@ def hoffman(request):
             rf = float(form.cleaned_data["rf"])
             mu = float(form.cleaned_data["mu"])
 
-            ans = hohmann_transfer.hohmann_transfer(ri,rf,mu)
+            ans = hohmann_transfer.hohmann_transfer(ri, rf, mu)
             context["semi_major"] = ans.semi_major_axis
             context["v_peri"] = ans.v_periapsis
             context["v_apo"] = ans.v_apoapsis
-            context["vi"] =ans.vi
+            context["vi"] = ans.vi
             context["vf"] = ans.vf
             context["del_vi"] = ans.delta_vi
             context["del_vf"] = ans.delta_vf
@@ -185,12 +208,13 @@ def hoffman(request):
 
     return render(request, "hoffman.html", context)
 
+
 def julian(request):
     context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
-        form =Julian(request.POST)
+        form = Julian(request.POST)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -198,11 +222,10 @@ def julian(request):
             # redirect to a new URL:
             year = float(form.cleaned_data["year"])
             month = float(form.cleaned_data["month"])
-            day= float(form.cleaned_data["day"])
+            day = float(form.cleaned_data["day"])
 
-            ans = jd_lst.calculate_julian_date(year,month,day)
+            ans = jd_lst.calculate_julian_date(year, month, day)
             context["jd"] = ans
-
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -210,17 +233,17 @@ def julian(request):
 
         context["jd"] = ""
 
-
     context["form"] = form
 
     return render(request, "julian.html", context)
+
 
 def lst(request):
     context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
-        form =LST(request.POST)
+        form = LST(request.POST)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -228,11 +251,10 @@ def lst(request):
             # redirect to a new URL:
             jul_date = float(form.cleaned_data["jul_date"])
             longitude = float(form.cleaned_data["longitude"])
-            utc_time= float(form.cleaned_data["utc_time"])
+            utc_time = float(form.cleaned_data["utc_time"])
 
-            ans = jd_lst. calculate_lst(jul_date,longitude,utc_time)
+            ans = jd_lst.calculate_lst(jul_date, longitude, utc_time)
             context["lst"] = ans
-
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -240,49 +262,21 @@ def lst(request):
 
         context["lst"] = ""
 
-
     context["form"] = form
 
     return render(request, "lst.html", context)
 
+
 def section_a(request):
-    return render(request,"section_a.html")
+    return render(request, "section_a.html")
+
 
 def kepler_hyp(request):
     context = {}
     # if this is a POST request we need to process the form data
     if request.method == "POST":
         # create a form instance and populate it with data from the request:
-        form =Kepler_hyp(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            m = float(form.cleaned_data["m"])
-            e= float(form.cleaned_data["e"])
-            tol=1e-9
-            max=1000
-            ans = sectiona.kepler_hyperbolic(e,m,tol,max)
-            context["e_m"] = ans
-
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = Kepler_hyp()
-
-        context["e_m"] = ""
-
-
-    context["form"] = form
-
-    return render(request, "kepler_hyp.html", context)
-def kepler_eqn(request):
-    context = {}
-    # if this is a POST request we need to process the form data
-    if request.method == "POST":
-        # create a form instance and populate it with data from the request:
-        form =Kepler_Eqn(request.POST)
+        form = Kepler_hyp(request.POST)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -290,11 +284,37 @@ def kepler_eqn(request):
             # redirect to a new URL:
             m = float(form.cleaned_data["m"])
             e = float(form.cleaned_data["e"])
-            tol=1e-9
-            max=1000
-            ans = sectiona.kepler_equation(e,m,tol,max)
-            context["em"] = ans
+            tol = 1e-9
+            ans = sectiona.kepler_hyperbolic(e, m, tol, 1000)
+            context["e_m"] = ans
 
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = Kepler_hyp()
+
+        context["e_m"] = ""
+
+    context["form"] = form
+
+    return render(request, "kepler_hyp.html", context)
+
+
+def kepler_eqn(request):
+    context = {}
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        # create a form instance and populate it with data from the request:
+        form = Kepler_Eqn(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            m = float(form.cleaned_data["m"])
+            e = float(form.cleaned_data["e"])
+            tol = 1e-9
+            ans = sectiona.kepler_equation(e, m, tol, 1000)
+            context["em"] = ans
 
     # if a GET (or any other method) we'll create a blank form
     else:
@@ -302,8 +322,6 @@ def kepler_eqn(request):
 
         context["em"] = ""
 
-
     context["form"] = form
 
     return render(request, "kepler_eqn.html", context)
-    
